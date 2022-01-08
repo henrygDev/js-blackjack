@@ -1,0 +1,55 @@
+<script src="styles.css"></script>
+<head>
+  <h1>blackjack game</h1>
+</head>
+
+<body>
+  <h3>your cash</h3>
+  <div id="playerCash"></div>
+
+  <div id="gameScreen">
+    <h3>cards left</h3>
+    <div id="cardsLeft"><</div> 
+
+    <h3>dealer hand</h3>
+    <div id="dealerHand"></div>
+    <div id="dealerValue"></div>
+    
+
+    <div id="mainScreen">
+      <h3>your hand</h3>
+      <div id="playerBet"></div>
+      <div id="playerHand"></div>
+      <div id="playerValue"></div>
+      <div id="endMessage"></div>
+    </div>
+
+    <div id="splitScreen">
+      <h3>split hand</h3>
+      <div id="splitBet"></div>
+      <div id="splitHand"></div>
+      <div id="splitValue"></div>
+      <div id="splitEndMessage"></div>
+    </div>
+
+    </br>
+    <div>
+      <button id='hit' onclick="Hit()">Hit</button>
+      <button id='stand' onclick="Stand()">Stand</button>
+      <button id='double' onclick="Double()">Double</button>
+      <button id='split' onclick="Split()">Split</button>
+      <button id='reset' onclick="Reset()">New Game</button>
+      <button id='nextHand' onclick="nextHand()">Next Hand</button>
+    </div>
+
+  </div>
+
+  <div id="betScreen">
+    <h3>your bet</h3>
+    <button class='bets' onclick="Bet(100)">100</button>
+    <button class='bets' onclick="Bet(500)">500</button>
+  </div>
+  <script src="deck.js"></script>
+  <script src="game.js"></script>
+</body>
+
