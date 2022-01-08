@@ -1,6 +1,7 @@
-<script src="styles.css"></script>
 <head>
+  <title>blackjack</title>
   <h1>blackjack game</h1>
+  <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
@@ -9,7 +10,7 @@
 
   <div id="gameScreen">
     <h3>cards left</h3>
-    <div id="cardsLeft"><</div> 
+    <div id="cardsLeft"></div> 
 
     <h3>dealer hand</h3>
     <div id="dealerHand"></div>
@@ -49,7 +50,38 @@
     <button class='bets' onclick="Bet(100)">100</button>
     <button class='bets' onclick="Bet(500)">500</button>
   </div>
+
+  <div id="sideBets">
+    <h3>side bets</h3>
+    <table>
+      <tr>
+        <td>perfect pair</td>
+        <td>21+3</td>
+        <td>insurance <br>(half of main bet)</td>
+        <td>other</td>
+      </tr>
+      <tr>
+        <td>
+          <button class="initSideBet" onclick="modifySideBet('perfectPair')">+100</button>
+          <div class="sideBet" id="perfectPair"></div>
+          <div class="sideBetMessage" id="perfectPairMessage"></div>
+        </td>
+        <td>
+          <button class="initSideBet" onclick="modifySideBet('pokerHand')">+100</button>
+          <div class="sideBet" id="pokerHand"></div>
+          <div class="sideBetMessage" id="pokerHandMessage"></div>
+        </td>
+        <td>
+          <button id="insuranceSideBet" onclick="buyInsurance()">Buy</button>
+          <div id="insuranceMessage"></div>
+        </td>
+        <td>other</td>
+      </tr>
+      </table>
+  </div>
   <script src="deck.js"></script>
+  <script src="side-bets.js"></script>
   <script src="game.js"></script>
+  <script src="game-commands.js"></script>
 </body>
 

@@ -10,11 +10,23 @@ values = {
   12: 'Q',
   13: 'K'
 }
+valuesReverse = {
+  'A': 1,
+  'J': 11,
+  'Q': 12,
+  'K': 13
+}
 imgValuesMap = {
   'A': 'ace',
   'J': 'king',
   'Q': 'queen',
   'K': 'king'
+}
+colour = {
+  'spades': 'black',
+  'hearts': 'red',
+  'clubs': 'black',
+  'diamonds': 'red'
 }
 
 class Player {
@@ -34,10 +46,10 @@ class Player {
 }
 
 class Card {
-  constructor(val, suit){
+  constructor(val, suit, pos='up'){
     this.val = val;
     this.suit = suit;
-    this.pos = 'up';
+    this.pos = pos;
     this.img = `${imgValuesMap[val] || val}_of_${suit}.png`;
   }
 }

@@ -7,6 +7,7 @@ let cash = 2000
 let endMessage = ''
 let splitEndMessage = ''
 let win = 0 // draw = 0, win = 1, lose = -1
+let activeSideBets = [] // [["betType", amt], ...]
 
 const deck = new Deck();
 const player = new Player();
@@ -15,28 +16,9 @@ const dealer = new Player();
 let playerHandValue
 let dealerHandValue
 
-const updateScreen = () => {
-  for (buttons of document.querySelectorAll("button.bets")){
-    buttons.style.display = "inline"
-  }
-  document.getElementById("playerBet").innerHTML = 'bet: ' + betValue
-  document.getElementById("splitBet").innerHTML = 'bet: ' + splitBetValue
-
-  if (split) document.getElementById("splitScreen").style.display = "inline"
-  document.getElementById("gameScreen").style.display = bet == 0 ? "none" : "block"
-  document.getElementById("betScreen").style.display = bet == 1 ? "none" : "block"
-  document.getElementById("playerCash").innerHTML = cash
-  document.getElementById("nextHand").style.display = "none"
-}
-
-const removeSplitDisplay = () => {
-  document.getElementById("splitScreen").style.display = "none"
-  document.getElementById("splitHand").innerHTML = ''
-  document.getElementById("splitValue").innerHTML = ''
-}
-
 const Reset = (split) => {
   removeSplitDisplay()
+  resetSideBets()
   game = 1
   canDouble = 1
 
@@ -57,8 +39,50 @@ const Reset = (split) => {
   dealer.reset()
   dealer.draw(deck.draw('down'))
   dealer.draw(deck.draw('up'))
+  // dealer.draw(new Card(9, 'spades', 'down'))
+  // dealer.draw(new Card('A', 'spades'))
   updateState()
   updateScreen()
+}
+
+const removeSplitDisplay = () => {
+  document.getElementById("splitScreen").style.display = "none"
+  document.getElementById("splitHand").innerHTML = ''
+  document.getElementById("splitValue").innerHTML = ''
+}
+
+const resetSideBets = () => {
+  for (buttons of document.querySelectorAll("button.initSideBet")){
+    buttons.style.display = "inline"
+  }
+  for (sideBet of document.querySelectorAll("div.sideBet")){
+    sideBet.innerHTML = ''
+  }
+  for (sideBetMessage of document.querySelectorAll("div.sideBetMessage")){
+    sideBetMessage.innerHTML = ''
+  }
+  document.getElementById("insuranceSideBet").style.display = "none"
+  document.getElementById("insuranceMessage").innerHTML = ""
+}
+
+const updateScreen = () => {
+  for (buttons of document.querySelectorAll("button.bets")){
+    buttons.style.display = "inline"
+  }
+  document.getElementById("playerBet").innerHTML = 'bet: ' + betValue
+  document.getElementById("splitBet").innerHTML = 'bet: ' + splitBetValue
+
+  if (split) document.getElementById("splitScreen").style.display = "inline"
+  document.getElementById("gameScreen").style.display = bet == 0 ? "none" : "block"
+  document.getElementById("betScreen").style.display = bet == 1 ? "none" : "block"
+  document.getElementById("playerCash").innerHTML = cash
+  document.getElementById("nextHand").style.display = "none"
+
+  if (bet){
+    for (buttons of document.querySelectorAll("button.initSideBet")){
+      buttons.style.display = "none"
+    }
+  }
 }
 
 const evalCard = (cardValue) => {
@@ -82,7 +106,7 @@ const evalHand = (player, faceDown, splitEval) => {
   return sum
 }
 
-const updateState = (stand) => {
+const updateState = (stand, insurance) => {
   if (stand) dealerFinish()
   evaluateWinner(stand)
 
@@ -116,6 +140,7 @@ const updateState = (stand) => {
   document.getElementById("double").style.display = canDouble == 1 && game == 1 ? "inline" : "none"
   document.getElementById("nextHand").style.display = "none"
   document.getElementById("reset").style.display = split == 1 ? "none" : "inline"
+  if (!insurance) document.getElementById("insuranceSideBet").style.display = "none"
 
   // transition screen for split bust
   if (split == 2){
@@ -149,18 +174,18 @@ const evaluateWinner = (stand, splitEval) => {
     player.splitHand = []
   }
 
-  if (dealerHandValue > 21){
-    msg = 'dealer bust, you win!'
-    win = 1
-  } else if (playerHandValue > 21){
+  if (playerHandValue > 21){
     msg = 'bust'
     win = -1
+  } else if (dealerHandValue > 21){
+    msg = 'dealer bust, you win!'
+    win = 1
+  } else if (playerHandValue == dealerHandValue && playerHandValue == 21){
+    msg = 'draw'
+    win = 0
   } else if (playerHandValue == 21){
     msg = 'blackjack!'
     win = 1
-  } else if (dealerHandValue == 21){
-    msg = 'dealer blackjack, you lose'
-    win = -1
   } else if (stand){
     if (playerHandValue > dealerHandValue){
       msg = 'you win!'
@@ -201,6 +226,36 @@ const evaluateWinner = (stand, splitEval) => {
   updateScreen()
 }
 
+const evalSideBets = () => {
+
+  while (activeSideBets.length > 0){
+    const [ betType, amount ] = activeSideBets.pop()
+    cash -= amount
+    message = ''
+    payout = 0
+
+    switch (betType){
+      case "pokerHand": 
+        evalPokerHand(amount)
+        break;
+      case "perfectPair":
+        evalPerfectPair(amount)
+        break;
+    }
+    updateSideBetMessage(betType, message)
+    cash += payout
+  }
+
+  //insurance is only available dealer has A face up
+  if (dealer.hand[1].val == 'A'){
+    document.getElementById("insuranceSideBet").style.display = "inline"
+  }
+}
+
+const updateSideBetMessage = (betType, message) => {
+  document.getElementById(`${betType}Message`).innerHTML = message
+}
+
 const createCardImage = (playerID, pos) => {
   const img = document.createElement('img');
   img.src = pos ? 'cards/red_joker.png' : `cards/${card.img}`;
@@ -215,65 +270,6 @@ const betReward = (splitBet) => {
   } else if (win == 0){
     cash += (splitBet ? splitBetValue : betValue)
   }
-}
-
-// *** game buttons *** // 
-const Bet = (val) => {
-  bet = 1
-  cash -= val
-  betValue = val
-  updateScreen()
-}
-
-const Hit = () => {
-  canDouble = 0
-  player.draw(deck.draw('up'))
-  updateState()
-}
-
-const Stand = () => {
-  split == 1 ? nextHand() : updateState(1)
-}
-
-const Double = () => {
-  if (split == 1){
-    cash -= splitBetValue
-    splitBetValue *= 2
-    canDouble = 1
-  } else {
-    cash -= betValue
-    betValue *= 2
-    canDouble = 0
-  }
-  player.draw(deck.draw('up'))
-  split == 1 ? nextHand() : updateState(1)
-}
-
-const Split = () => {
-  cash -= betValue
-  splitBetValue = betValue
-  canSplit = 0
-  split = 1
-  player.splitHandTemp = player.hand.pop()
-  updateState()
-  updateScreen()
-}
-
-const nextHand = () => {
-  split = 0
-  canDouble = 1
-  moveSplitHand()
-  updateState()
-  updateScreen()
-}
-
-const moveSplitHand = () => {
-  for (card of player.hand){
-    createCardImage("splitHand");
-  }
-  document.getElementById("splitValue").innerHTML = evalHand(player)
-  player.splitHand = player.hand
-  player.hand = [player.splitHandTemp]
 }
 
 Reset()
