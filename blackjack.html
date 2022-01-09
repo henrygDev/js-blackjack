@@ -1,24 +1,34 @@
 <head>
-  <title>blackjack</title>
-  <h1>blackjack game</h1>
+  <title>Blackjack</title>
+  <h1>Blackjack</h1>
   <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Lora&display=swap" rel="stylesheet">
 </head>
 
 <body>
-  <h3>your cash</h3>
+  <div class="audio">
+    <audio autoplay id="player">
+      <source src="casino.mp3" type="audio/mpeg">
+    </audio>
+    <a class="copyright" href="https://www.hooksounds.com/">Music by HookSounds</a>
+    <button onclick="document.getElementById('player').play()">Unmute</button>
+    <button onclick="document.getElementById('player').pause()">Mute</button>
+  </div>
+
+  <h3>Your Cash</h3>
   <div id="playerCash"></div>
 
   <div id="gameScreen">
-    <h3>cards left</h3>
+    <h3>Cards Left</h3>
     <div id="cardsLeft"></div> 
 
-    <h3>dealer hand</h3>
+    <h3>Dealer Hand</h3>
     <div id="dealerHand"></div>
     <div id="dealerValue"></div>
     
 
     <div id="mainScreen">
-      <h3>your hand</h3>
+      <h3>Your Hand</h3>
       <div id="playerBet"></div>
       <div id="playerHand"></div>
       <div id="playerValue"></div>
@@ -26,7 +36,7 @@
     </div>
 
     <div id="splitScreen">
-      <h3>split hand</h3>
+      <h3>Split Hand</h3>
       <div id="splitBet"></div>
       <div id="splitHand"></div>
       <div id="splitValue"></div>
@@ -46,19 +56,18 @@
   </div>
 
   <div id="betScreen">
-    <h3>your bet</h3>
+    <h3>Your Bet</h3>
     <button class='bets' onclick="Bet(100)">100</button>
     <button class='bets' onclick="Bet(500)">500</button>
   </div>
 
   <div id="sideBets">
-    <h3>side bets</h3>
-    <table>
+    <h3>Side Bets</h3>
+    <table class="center">
       <tr>
-        <td>perfect pair</td>
+        <td>Perfect pair</td>
         <td>21+3</td>
-        <td>insurance <br>(half of main bet)</td>
-        <td>other</td>
+        <td>Insurance <br>(half of main bet)</td>
       </tr>
       <tr>
         <td>
@@ -75,13 +84,14 @@
           <button id="insuranceSideBet" onclick="buyInsurance()">Buy</button>
           <div id="insuranceMessage"></div>
         </td>
-        <td>other</td>
       </tr>
       </table>
   </div>
+  
   <script src="deck.js"></script>
   <script src="side-bets.js"></script>
   <script src="game.js"></script>
   <script src="game-commands.js"></script>
+  
 </body>
 

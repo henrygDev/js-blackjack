@@ -272,5 +272,7 @@ const betReward = (splitBet) => {
   }
 }
 
+document.getElementById('player').volume = 0.2
+
 Reset()
 updateScreen()
