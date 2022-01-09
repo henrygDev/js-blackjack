@@ -65,3 +65,7 @@ div.audio {
   display: block;
   color: white;
 }
+
+p.help {
+  display: inline
+}
