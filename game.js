@@ -272,6 +272,12 @@ const betReward = (splitBet) => {
   }
 }
 
+let toggle = 1
+const toggleMusic = () => {
+  toggle == 1 ? document.getElementById('player').pause() : document.getElementById('player').play()
+  toggle = toggle == 1 ? 0 : 1
+}
+
 document.getElementById('player').volume = 0.2
 
 Reset()
