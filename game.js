@@ -134,6 +134,7 @@ const updateState = (stand, insurance) => {
   document.getElementById("splitEndMessage").innerHTML = game == 0 ? splitEndMessage : ''
 
   // buttons
+  document.getElementById("help").style.display = bet == 0 ? "inline" : "none"
   document.getElementById("hit").style.display = game == 0 ? "none" : "inline"
   document.getElementById("stand").style.display = game == 0 ? "none" : "inline"
   document.getElementById("split").style.display = canSplit == 1 && game == 1 ? "inline" : "none"
@@ -272,13 +273,13 @@ const betReward = (splitBet) => {
   }
 }
 
-let toggle = 1
+let toggle = 0
 const toggleMusic = () => {
   toggle == 1 ? document.getElementById('player').pause() : document.getElementById('player').play()
   toggle = toggle == 1 ? 0 : 1
 }
 
-document.getElementById('player').volume = 0.2
+document.getElementById('player').volume = 0.1
 
 Reset()
 updateScreen()

@@ -56,3 +56,12 @@ div.audio {
   top: 10;
   right: 10;
 }
+
+.hide {
+  display: none;
+}
+
+.help:hover + .hide {
+  display: block;
+  color: white;
+}
